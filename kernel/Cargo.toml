@@ -1,0 +1,31 @@
+[package]
+name = "kernel"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+bootloader_api = { version = "0.11", default-features = false }
+spin = { version = "0.9", default-features = false, features = ["spin_mutex", "lazy", "rwlock"] }
+linked_list_allocator = { version = "0.10", default-features = false, features = ["use_spin"] }
+font8x8 = { version = "0.3", default-features = false, features = ["unicode"] }
+x86_64 = { version = "0.14.10", default-features = false, features = ["instructions", "abi_x86_interrupt"] }
+pic8259 = { version = "0.10.1", default-features = false }
+pc-keyboard = { version = "0.7.0", default-features = false }
+lazy_static = { version = "1.4.0", features = ["spin_no_std"] }
+crossbeam-queue = { version = "0.3.11", default-features = false, features = ["alloc"] }
+
+bitflags = { version = "2.4.0", default-features = false }
+
+log = { version = "0.4", default-features = false }
+
+
+
+# Font rendering
+# (font8x8 is used instead)
+
+# SIMD support (nightly)
+packed_simd = { version = "0.3", optional = true }
+
+[features]
+simd = ["packed_simd"]
+test-mode = []

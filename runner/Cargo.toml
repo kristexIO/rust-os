@@ -1,0 +1,18 @@
+[package]
+name = "runner"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# bootloader с поддержкой BIOS — std-крейт для создания загрузочного образа.
+bootloader = { version = "0.11", features = ["bios"] }
+
+# Ядро как бинарный артефакт (artifact dependency).
+# Cargo скомпилирует kernel под x86_64-unknown-none и передаст путь через env.
+[dependencies.kernel]
+path = "../kernel"
+artifact = "bin"
+target = "x86_64-unknown-none"
+
+[features]
+test-mode = ["kernel/test-mode"]

@@ -1,0 +1,3 @@
+# Configuration values only; lint levels belong in Cargo/CI arguments.
+too-many-lines-threshold = 300
+cognitive-complexity-threshold = 50

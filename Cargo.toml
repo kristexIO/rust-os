@@ -1,0 +1,10 @@
+[workspace]
+members = ["kernel", "runner"]
+resolver = "2"
+
+[profile.dev]
+panic = "abort" # Не нужно раскручивать стек (unwinding) при панике в ядре
+opt-level = 2   # Критически важно для скорости отрисовки GUI (Double Buffering) в QEMU
+
+[profile.release]
+panic = "abort"

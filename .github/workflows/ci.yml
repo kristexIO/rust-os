@@ -1,0 +1,44 @@
+name: Rust OS CI
+
+on:
+  push:
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  quality:
+    name: Build And Quality Gates
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust nightly
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          targets: x86_64-unknown-none
+          components: rust-src, llvm-tools-preview, rustfmt, clippy
+      - name: Formatting
+        run: cargo fmt --all -- --check
+      - name: Compile workspace
+        run: cargo check --workspace
+      - name: Clippy correctness gates
+        run: cargo clippy --workspace -- -D clippy::correctness -D unused_must_use
+
+  qemu-tests:
+    name: Kernel Tests In QEMU
+    needs: quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust nightly
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          targets: x86_64-unknown-none
+          components: rust-src, llvm-tools-preview
+      - name: Install QEMU
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-system-x86
+      - name: Run kernel tests
+        run: timeout 60s cargo run --release -p runner --features test-mode -- --test
